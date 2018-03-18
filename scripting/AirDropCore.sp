@@ -14,6 +14,7 @@ ConVar cv_fMaxDistance;
 ConVar cv_fLandDistance;
 ConVar cv_sLandBeam;
 ConVar cv_bCheckSolid;
+ConVar cv_fFallSpeedMult;
 
 ArrayList Array_BoxEnt;
 ArrayList Array_BoxRunningEnt;
@@ -63,6 +64,7 @@ public void OnPluginStart()
 	cv_fLandDistance = CreateConVar("sm_airdrop_landing_zone", "75.0", "N - Prevent player going into the Box Landing Zone to avoid them to compenetrait when the box. 0 - Disable", _, true, 0.0);
 	cv_sLandBeam = CreateConVar("sm_airdrop_landing_beam", "1", "1 - Make a random colored beam in the landind zone. 0 - Disabled. R,G,B - Colors (Es: 255, 0, 255)");
 	cv_bCheckSolid = CreateConVar("sm_airdrop_check_solid", "1", "1 - If a box is going to compenerate with the floor stop it. 0 - Allow the box to go thru the floor");
+	cv_fFallSpeedMult = CreateConVar("sm_airdrop_speed_multi", "2.0", "The fall speed multiplier");
 	
 	//Get CvarString Values
 	cv_sBoxPath.GetString(sBoxPath, sizeof(sBoxPath));
@@ -290,8 +292,9 @@ public void OnReqFrame(ArrayList DataArray)
 		return;
 	}
 	
-	vPos[2] -= 0.5;
+	vPos[2] -= 0.5 * cv_fFallSpeedMult.FloatValue;
 	TeleportEntity(iBoxEnt, vPos, NULL_VECTOR, NULL_VECTOR);
+	//vPos[2] -= 30.0 * cv_fFallSpeedMult.FloatValue;
 	vPos[2] -= 30.0;
 	TeleportEntity(iParaEnt, vPos, NULL_VECTOR, NULL_VECTOR);
 	
