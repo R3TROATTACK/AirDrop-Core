@@ -14,6 +14,17 @@ ArrayList Array_BoxEnt;
 //Booleans
 bool bPressed[MAXPLAYERS + 1];
 
+char g_sValidWeapons[][] = //VALID WEAPON NAMES HERE
+{
+     //"defuser", "c4", "knife", "knifegg", "taser", "healthshot", //misc
+     /*"decoy",*/ "flashbang", "hegrenade", "molotov", "incgrenade", "smokegrenade", "tagrenade", //grenades
+     //"usp_silencer", "glock", "tec9", "p250", "hkp2000", "cz75a", "deagle", "revolver", "fiveseven", "elite", //pistoles
+     "nova", "xm1014", "sawedoff", "mag7", "m249", "negev", //heavy weapons
+     "mp9", "mp7", "ump45", "p90", "bizon", "mac10", //smgs
+     "ak47", "aug", "famas", "sg556", "galilar", "m4a1", "m4a1_silencer", //rifles
+     "awp", "ssg08", "scar20", "g3sg1" //snipers
+};
+
 #define PLUGIN_AUTHOR "Hexah"
 #define PLUGIN_VERSION "1.00"
 
@@ -35,6 +46,25 @@ public void OnPluginStart()
 	//Hook Events
 	HookEvent("round_start", Event_RoundStart);
 	HookEvent("decoy_detonate", Event_DecoyStarted);
+}
+
+public void OnMapStart()
+{
+	CreateTimer(60.0, Timer_GiveDecoy, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
+}
+
+public void Timer_GiveDecoy(Handle timer)
+{
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		if(IsClientInGame(i))
+		{
+			if(IsPlayerAlive(i) && GetClientTeam(i) > 1)
+			{
+				GivePlayerItem(i, "weapon_decoy");
+			}
+		}
+	}
 }
 
 public void Event_RoundStart(Event event, const char[] name, bool dontBroadcast)
@@ -75,10 +105,9 @@ public void AirDrop_BoxUsed(int client, int iEnt) //Called when pressing +use on
 			if (bPressed[client])
 				return;
 			
-			if (GetPlayerWeaponSlot(client, CS_SLOT_SECONDARY) != -1) //Check if the client doesnt have already a weapon
-				return;
-			
-			GivePlayerItem(client, "weapon_deagle");
+			char weapon[PLATFORM_MAX_PATH];
+			Format(weapon, sizeof(weapon), "weapon_%s", g_sValidWeapons[GetRandomInt(0, sizeof(g_sValidWeapons))]);
+			GivePlayerItem(client, weapon);
 			
 			bPressed[client] = true;
 			
