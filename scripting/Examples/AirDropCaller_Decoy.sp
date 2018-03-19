@@ -53,7 +53,7 @@ public void OnMapStart()
 	CreateTimer(60.0, Timer_GiveDecoy, _, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 }
 
-public void Timer_GiveDecoy(Handle timer)
+public Action Timer_GiveDecoy(Handle timer)
 {
 	for (int i = 1; i <= MaxClients; i++)
 	{
