@@ -110,7 +110,8 @@ public void AirDrop_BoxUsed(int client, int iEnt) //Called when pressing +use on
 			GivePlayerItem(client, weapon);
 			
 			bPressed[client] = true;
-			
+			AcceptEntityInput(iEnt, "kill", 0, 0);
+			Array_BoxEnt.Erase(i);
 			CreateTimer(2.0, Timer_Pressed, GetClientUserId(client)); //Create Timer to avoid spamming
 		}
 	}
